@@ -1,0 +1,18 @@
+{
+  "name": "ai-agent-toolchain-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "一个跑得起来的 AI Agent 工具链实验室：function calling + MCP 三层翻译，全程真实可观测。面向前端工程师的面试突击。",
+  "scripts": {
+    "fc": "node 01-function-calling/demo.mjs",
+    "mcp": "node 02-mcp/client.mjs",
+    "mcp:server": "node 02-mcp/server.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "openai": "^4.73.0",
+    "zod": "^3.23.8"
+  },
+  "license": "MIT"
+}
