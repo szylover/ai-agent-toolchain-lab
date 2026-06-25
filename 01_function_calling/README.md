@@ -3,9 +3,7 @@
 让模型「调用你的函数」的最小闭环。
 
 ```bash
-npm run fc          # 在仓库根目录
-# 或
-node 01-function-calling/demo.mjs
+python 01_function_calling/demo.py
 ```
 
 ## 盯住三件事（面试就考这个）
