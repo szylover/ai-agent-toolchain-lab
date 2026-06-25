@@ -10,6 +10,7 @@
     "resilience": "tsx src/03-resilience/demo.ts",
     "observability": "tsx src/04-observability/demo.ts",
     "orchestration": "tsx src/05-orchestration/demo.ts",
+    "dag": "tsx src/05-orchestration/dag.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

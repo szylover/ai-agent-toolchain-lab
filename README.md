@@ -50,6 +50,7 @@ npm run mcp           # 第 2 课：MCP 三层翻译
 npm run resilience    # 第 3 课：失败处理（超时/重试/降级，不需要 key）
 npm run observability # 第 4 课：可观测性（trace_id + span）
 npm run orchestration # 第 5 课：多工具编排（选路 + 并行，建议配真模型）
+npm run dag           # 第 5 课进阶：DAG 编排（有依赖时 plan-then-execute）
 ```
 
 ### 接真模型（Azure OpenAI）
@@ -74,7 +75,7 @@ npm run mcp
 | 2 | [mcp](src/02-mcp/README.md) | 真 MCP server + 三层翻译，模型不知道 MCP | 可选 |
 | 3 | [resilience](src/03-resilience/README.md) | 超时 / 退避重试 / 降级兜底 | 否 |
 | 4 | [observability](src/04-observability/README.md) | trace_id + span 调用树 | 可选 |
-| 5 | [orchestration](src/05-orchestration/README.md) | 多工具选路 + 并行执行 | 建议配 |
+| 5 | [orchestration](src/05-orchestration/README.md) | 多工具选路 + 并行；DAG 处理依赖 | 建议配 |
 
 ### `src/01-function-calling/` — 让模型调用你的函数
 最小闭环：模型读工具的 `description` → 自己决定调哪个、怎么填参数 → 你执行 → 回填 → 模型总结。
@@ -99,7 +100,8 @@ npm run mcp
 详见 [`src/04-observability/README.md`](src/04-observability/README.md)。
 
 ### `src/05-orchestration/` — 工具一多怎么选、怎么并行
-模型靠 `description` **选路**；一回合可吐**多个 tool_call**；互不依赖就 `Promise.all` **并行**。
+模型靠 `description` **选路**；一回合可吐**多个 tool_call**；互不依赖就 `Promise.all` **并行**（`demo.ts`）。
+**有依赖**时用 plan-then-execute：模型先产出带 `dependsOn` 的 DAG，runtime 拓扑调度（`dag.ts`）。
 详见 [`src/05-orchestration/README.md`](src/05-orchestration/README.md)。
 
 ---
@@ -123,7 +125,7 @@ ai-agent-toolchain-lab/
 │   ├── 02-mcp/              # 第 2 课：真 MCP server + client，三层翻译
 │   ├── 03-resilience/       # 第 3 课：超时 / 重试 / 降级
 │   ├── 04-observability/    # 第 4 课：trace_id + span 调用树
-│   └── 05-orchestration/    # 第 5 课：多工具选路 + 并行
+│   └── 05-orchestration/    # 第 5 课：多工具选路 + 并行；DAG 依赖调度
 ├── .env.example             # 配置模板（复制成 .env 填真值）
 ├── tsconfig.json
 └── package.json
