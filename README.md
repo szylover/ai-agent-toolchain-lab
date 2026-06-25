@@ -1,7 +1,7 @@
 # AI Agent 工具链实验室 · ai-agent-toolchain-lab
 
 > 一个**真正跑得起来**的 AI Agent 工具链 demo，面向**前端工程师**的面试突击。
-> 两个阶段、全程可观测，把 **Function Calling** 和 **MCP 三层翻译**从「听说过」变成「亲手跑过」。
+> 五课循序渐进、全程可观测，把 **Function Calling、MCP 三层翻译、失败处理、可观测性、多工具编排**从「听说过」变成「亲手跑过」。
 
 如果你能对着这个 repo 把下面这张图讲清楚，tool chain 面试的核心就稳了：
 
@@ -45,8 +45,11 @@ npm install
 直接运行，`src/lib/llm.ts` 会自动退化成规则模拟的「假模型」：
 
 ```bash
-npm run fc     # 第 1 课：function calling
-npm run mcp    # 第 2 课：MCP 三层翻译
+npm run fc            # 第 1 课：function calling
+npm run mcp           # 第 2 课：MCP 三层翻译
+npm run resilience    # 第 3 课：失败处理（超时/重试/降级，不需要 key）
+npm run observability # 第 4 课：可观测性（trace_id + span）
+npm run orchestration # 第 5 课：多工具编排（选路 + 并行，建议配真模型）
 ```
 
 ### 接真模型（Azure OpenAI）
@@ -63,7 +66,15 @@ npm run mcp
 
 ---
 
-## 两个阶段
+## 五课循序渐进
+
+| # | 课 | 一句话看点 | 需要 key? |
+|---|---|---|---|
+| 1 | [function calling](src/01-function-calling/README.md) | 模型只「吐意图」，执行权在你 | 可选 |
+| 2 | [mcp](src/02-mcp/README.md) | 真 MCP server + 三层翻译，模型不知道 MCP | 可选 |
+| 3 | [resilience](src/03-resilience/README.md) | 超时 / 退避重试 / 降级兜底 | 否 |
+| 4 | [observability](src/04-observability/README.md) | trace_id + span 调用树 | 可选 |
+| 5 | [orchestration](src/05-orchestration/README.md) | 多工具选路 + 并行执行 | 建议配 |
 
 ### `src/01-function-calling/` — 让模型调用你的函数
 最小闭环：模型读工具的 `description` → 自己决定调哪个、怎么填参数 → 你执行 → 回填 → 模型总结。
@@ -78,6 +89,18 @@ npm run mcp
 - ② runtime 是中间的**翻译官 + 执行者**：`tools/list` 发现工具、翻译成模型格式、`tools/call` 真正执行。
 
 详见 [`src/02-mcp/README.md`](src/02-mcp/README.md)。
+
+### `src/03-resilience/` — 工具不可靠怎么办（前端最熟的活）
+**超时** → **指数退避重试** → **降级兜底**。失败处理全在 runtime 执行层，模型不参与。面试超高频。
+详见 [`src/03-resilience/README.md`](src/03-resilience/README.md)。
+
+### `src/04-observability/` — agent 黑盒怎么排查
+**trace_id + span** 调用树，和前端链路追踪 1:1 迁移。一眼看出耗时分布、谁调了谁。
+详见 [`src/04-observability/README.md`](src/04-observability/README.md)。
+
+### `src/05-orchestration/` — 工具一多怎么选、怎么并行
+模型靠 `description` **选路**；一回合可吐**多个 tool_call**；互不依赖就 `Promise.all` **并行**。
+详见 [`src/05-orchestration/README.md`](src/05-orchestration/README.md)。
 
 ---
 
@@ -96,13 +119,11 @@ ai-agent-toolchain-lab/
 │   ├── lib/
 │   │   ├── llm.ts           # 共享模型调用层（真 Azure / mock 自动切换 + .env 加载）
 │   │   └── types.ts         # 消息 / 工具的最小类型定义
-│   ├── 01-function-calling/
-│   │   ├── demo.ts          # Agent 循环 + function calling
-│   │   └── README.md
-│   └── 02-mcp/
-│       ├── server.ts        # 真 MCP server（无 LLM 的哑执行器）
-│       ├── client.ts        # MCP client + LLM 桥接，演示三层
-│       └── README.md
+│   ├── 01-function-calling/ # 第 1 课：function calling
+│   ├── 02-mcp/              # 第 2 课：真 MCP server + client，三层翻译
+│   ├── 03-resilience/       # 第 3 课：超时 / 重试 / 降级
+│   ├── 04-observability/    # 第 4 课：trace_id + span 调用树
+│   └── 05-orchestration/    # 第 5 课：多工具选路 + 并行
 ├── .env.example             # 配置模板（复制成 .env 填真值）
 ├── tsconfig.json
 └── package.json

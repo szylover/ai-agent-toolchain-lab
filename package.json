@@ -7,6 +7,9 @@
   "scripts": {
     "fc": "tsx src/01-function-calling/demo.ts",
     "mcp": "tsx src/02-mcp/client.ts",
+    "resilience": "tsx src/03-resilience/demo.ts",
+    "observability": "tsx src/04-observability/demo.ts",
+    "orchestration": "tsx src/05-orchestration/demo.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
