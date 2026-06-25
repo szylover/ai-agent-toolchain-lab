@@ -3,7 +3,7 @@
 让模型「调用你的函数」的最小闭环。
 
 ```bash
-python 01_function_calling/demo.py
+npm run fc
 ```
 
 ## 盯住三件事（面试就考这个）

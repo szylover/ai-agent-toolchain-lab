@@ -1,11 +1,9 @@
 # 密钥与本地配置（永远不要提交）
 .env
 
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
+# 依赖与构建产物
+node_modules/
+dist/
 
 # 日志/系统文件
 *.log

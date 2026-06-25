@@ -1,0 +1,23 @@
+{
+  "name": "ai-agent-toolchain-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "跑得起来的 AI Agent 工具链实验室：function calling + MCP 三层翻译，全程真实可观测。TypeScript 实现，面向前端工程师的面试突击。",
+  "scripts": {
+    "fc": "tsx src/01-function-calling/demo.ts",
+    "mcp": "tsx src/02-mcp/client.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "openai": "^4.73.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "license": "MIT"
+}

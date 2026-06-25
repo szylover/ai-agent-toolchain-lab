@@ -36,15 +36,17 @@
 ## 快速开始
 
 ```bash
-pip install -r requirements.txt
+npm install
 ```
 
+> 需要 Node.js ≥ 20.12（用到内置的 `process.loadEnvFile`）。TypeScript 直接用 `tsx` 跑，免编译。
+
 ### 不配 key 也能跑（mock 模型，零成本）
-直接运行，`lib/llm.py` 会自动退化成规则模拟的「假模型」：
+直接运行，`src/lib/llm.ts` 会自动退化成规则模拟的「假模型」：
 
 ```bash
-python 01_function_calling/demo.py   # 第 1 课：function calling
-python 02_mcp/client.py              # 第 2 课：MCP 三层翻译
+npm run fc     # 第 1 课：function calling
+npm run mcp    # 第 2 课：MCP 三层翻译
 ```
 
 ### 接真模型（Azure OpenAI）
@@ -53,8 +55,8 @@ python 02_mcp/client.py              # 第 2 课：MCP 三层翻译
 ```bash
 cp .env.example .env      # Windows: copy .env.example .env
 # 编辑 .env 填入 key / endpoint / deployment
-python 01_function_calling/demo.py
-python 02_mcp/client.py
+npm run fc
+npm run mcp
 ```
 
 > ⚠️ 安全红线：key 等于密码，**不进聊天、不进代码、不进 git**。本仓库通过 `.env` + `.gitignore` 保证 key 永不入库。跑完不放心就去 Azure Portal 把 key rotate 一次。
@@ -63,19 +65,19 @@ python 02_mcp/client.py
 
 ## 两个阶段
 
-### `01_function_calling/` — 让模型调用你的函数
+### `src/01-function-calling/` — 让模型调用你的函数
 最小闭环：模型读工具的 `description` → 自己决定调哪个、怎么填参数 → 你执行 → 回填 → 模型总结。
 **看点**：模型只「返回意图」，真正执行的是你的代码。
-详见 [`01_function_calling/README.md`](01_function_calling/README.md)。
+详见 [`src/01-function-calling/README.md`](src/01-function-calling/README.md)。
 
-### `02_mcp/` — 把「三层翻译」演出来
-一个**真正的 MCP server**（`server.py`，里面**没有任何 LLM**）+ 一个 **MCP client / runtime**（`client.py`），基于官方 `mcp` Python SDK。
+### `src/02-mcp/` — 把「三层翻译」演出来
+一个**真正的 MCP server**（`server.ts`，里面**没有任何 LLM**）+ 一个 **MCP client / runtime**（`client.ts`），基于官方 `@modelcontextprotocol/sdk`。
 运行后看 stderr 日志，你会**亲眼**看到：
 - ① server 全程只收**结构化参数**，从不碰自然语言、也没有模型；
 - ③ 模型全程只见 `tools` 字段，**「MCP」这个词从没进过它的视野**；
 - ② runtime 是中间的**翻译官 + 执行者**：`tools/list` 发现工具、翻译成模型格式、`tools/call` 真正执行。
 
-详见 [`02_mcp/README.md`](02_mcp/README.md)。
+详见 [`src/02-mcp/README.md`](src/02-mcp/README.md)。
 
 ---
 
@@ -90,16 +92,20 @@ python 02_mcp/client.py
 
 ```
 ai-agent-toolchain-lab/
-├── lib/llm.py               # 共享模型调用层（真 Azure / mock 自动切换 + .env 加载）
-├── 01_function_calling/
-│   ├── demo.py              # Agent 循环 + function calling
-│   └── README.md
-├── 02_mcp/
-│   ├── server.py            # 真 MCP server（无 LLM 的哑执行器）
-│   ├── client.py            # MCP client + LLM 桥接，演示三层
-│   └── README.md
+├── src/
+│   ├── lib/
+│   │   ├── llm.ts           # 共享模型调用层（真 Azure / mock 自动切换 + .env 加载）
+│   │   └── types.ts         # 消息 / 工具的最小类型定义
+│   ├── 01-function-calling/
+│   │   ├── demo.ts          # Agent 循环 + function calling
+│   │   └── README.md
+│   └── 02-mcp/
+│       ├── server.ts        # 真 MCP server（无 LLM 的哑执行器）
+│       ├── client.ts        # MCP client + LLM 桥接，演示三层
+│       └── README.md
 ├── .env.example             # 配置模板（复制成 .env 填真值）
-└── requirements.txt
+├── tsconfig.json
+└── package.json
 ```
 
 MIT License.
