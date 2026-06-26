@@ -11,6 +11,8 @@
     "observability": "tsx src/04-observability/demo.ts",
     "orchestration": "tsx src/05-orchestration/demo.ts",
     "dag": "tsx src/05-orchestration/dag.ts",
+    "rag": "tsx src/06-rag/rag.ts",
+    "workflow": "tsx src/07-workflow/workflow.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

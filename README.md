@@ -1,7 +1,7 @@
 # AI Agent 工具链实验室 · ai-agent-toolchain-lab
 
 > 一个**真正跑得起来**的 AI Agent 工具链 demo，面向**前端工程师**的面试突击。
-> 五课循序渐进、全程可观测，把 **Function Calling、MCP 三层翻译、失败处理、可观测性、多工具编排**从「听说过」变成「亲手跑过」。
+> 七课循序渐进、全程可观测，把 **Function Calling、MCP 三层翻译、失败处理、可观测性、多工具编排、RAG、Workflow** 从「听说过」变成「亲手跑过」。
 
 如果你能对着这个 repo 把下面这张图讲清楚，tool chain 面试的核心就稳了：
 
@@ -51,6 +51,8 @@ npm run resilience    # 第 3 课：失败处理（超时/重试/降级，不需
 npm run observability # 第 4 课：可观测性（trace_id + span）
 npm run orchestration # 第 5 课：多工具编排（选路 + 并行，建议配真模型）
 npm run dag           # 第 5 课进阶：DAG 编排（有依赖时 plan-then-execute）
+npm run rag           # 第 6 课：RAG 检索增强生成（裸问 vs RAG 对比，建议配真模型）
+npm run workflow      # 第 7 课：Workflow 工作流编排（链式/路由/评审循环，建议配真模型）
 ```
 
 ### 接真模型（Azure OpenAI）
@@ -67,7 +69,7 @@ npm run mcp
 
 ---
 
-## 五课循序渐进
+## 七课循序渐进
 
 | # | 课 | 一句话看点 | 需要 key? |
 |---|---|---|---|
@@ -76,6 +78,8 @@ npm run mcp
 | 3 | [resilience](src/03-resilience/README.md) | 超时 / 退避重试 / 降级兜底 | 否 |
 | 4 | [observability](src/04-observability/README.md) | trace_id + span 调用树 | 可选 |
 | 5 | [orchestration](src/05-orchestration/README.md) | 多工具选路 + 并行；DAG 处理依赖 | 建议配 |
+| 6 | [rag](src/06-rag/README.md) | 检索增强：裸问瞎编 vs RAG 有据可查 + 引用 | 建议配 |
+| 7 | [workflow](src/07-workflow/README.md) | 工作流三模式 + Workflow vs Agent 区分 | 建议配 |
 
 ### `src/01-function-calling/` — 让模型调用你的函数
 最小闭环：模型读工具的 `description` → 自己决定调哪个、怎么填参数 → 你执行 → 回填 → 模型总结。
@@ -104,6 +108,16 @@ npm run mcp
 **有依赖**时用 plan-then-execute：模型先产出带 `dependsOn` 的 DAG，runtime 拓扑调度（`dag.ts`）。
 详见 [`src/05-orchestration/README.md`](src/05-orchestration/README.md)。
 
+### `src/06-rag/` — 让模型「带着资料」回答
+**检索增强生成**：切块 → 向量化 → top-k 检索 → 拼进 prompt → 据此作答 + 标 `[引用]`。
+用一份模型没见过的虚构内部文档，直观对比**裸问（瞎编）vs RAG（精确命中）**。检索全程无 LLM。
+详见 [`src/06-rag/README.md`](src/06-rag/README.md)。
+
+### `src/07-workflow/` — 工作流编排（Workflow vs Agent）
+三个常见模式：**链式 + 质量门**、**路由分流**、**评审-优化循环**。
+核心面试点：**Workflow（代码写死控制流）vs Agent（LLM 决定控制流）**——能用 workflow 就别上 agent。
+详见 [`src/07-workflow/README.md`](src/07-workflow/README.md)。
+
 ---
 
 ## 面试一句话总结
@@ -125,7 +139,9 @@ ai-agent-toolchain-lab/
 │   ├── 02-mcp/              # 第 2 课：真 MCP server + client，三层翻译
 │   ├── 03-resilience/       # 第 3 课：超时 / 重试 / 降级
 │   ├── 04-observability/    # 第 4 课：trace_id + span 调用树
-│   └── 05-orchestration/    # 第 5 课：多工具选路 + 并行；DAG 依赖调度
+│   ├── 05-orchestration/    # 第 5 课：多工具选路 + 并行；DAG 依赖调度
+│   ├── 06-rag/              # 第 6 课：RAG 检索增强（切块/向量化/检索/引用）
+│   └── 07-workflow/         # 第 7 课：Workflow 三模式 + Workflow vs Agent
 ├── .env.example             # 配置模板（复制成 .env 填真值）
 ├── tsconfig.json
 └── package.json
